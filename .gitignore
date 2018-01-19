@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #要忽略谁，就把谁写在这里
 dist
 node_modules
@@ -8,3 +9,19 @@ node_modules
 # 但是，有些.开头文件是我们自己写的，需要提交，可以使用！取反，告诉git不要忽略谁
 !.babelrc
 !.gitignore
+=======
+.DS_Store
+node_modules/
+/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+>>>>>>> 959572a47f737df3bf05fb3388c0be56207308f2
