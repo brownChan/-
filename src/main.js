@@ -37,6 +37,13 @@ Vue.prototype.$http = axios;
 //把api添加到Vue原型中
 Vue.prototype.$api = api;
 
+
+//导入自己封装的vue插件
+import MyFilter from "./filter"
+//使用
+Vue.use(MyFilter);
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
