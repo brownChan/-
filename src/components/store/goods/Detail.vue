@@ -74,6 +74,9 @@
 
 <script>
 import SlideList from "./common/SlideList.vue";
+import DetailView from "./common/DetailView.vue";
+import DetailInfo from "./common/DetailInfo.vue";
+import Comment from "./common/Comment.vue";
   export default {
     data () {
       return {
@@ -98,7 +101,10 @@ import SlideList from "./common/SlideList.vue";
       this.getGoods();
     },
     components:{
-      SlideList
+      SlideList,
+      DetailView,
+      DetailInfo,
+      Comment
     }
   };
 </script>
