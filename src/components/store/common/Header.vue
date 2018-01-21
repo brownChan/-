@@ -7,7 +7,9 @@
           <a target="_blank" href="#"></a>
           <a target="_blank" href="#"></a>
           </div>
-          <div id="menu" class="right-box"><a href="/login.html">登录</a><a href="/register.html">注册</a>
+          <div id="menu" class="right-box">
+            <router-link :to="{name:'login'}" >登录</router-link>
+            <a href="/register.html">注册</a>
           <strong>|</strong>
           </div>
         </div>

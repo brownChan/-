@@ -273,7 +273,7 @@ table { border-collapse:collapse; border-spacing:0; }
 	.pic-scroll .items ul li img{ padding:2px; border:1px solid #e8e8e8; width:56px; height:56px; }
 	.pic-scroll .items ul li img:hover{ padding:1px; border:2px solid #d70000; }
 /*商品规格*/
-.goods-spec{ position:relative; margin:0 0 0 395px; overflow:hidden; }
+.goods-spec{ position:relative; margin:0 0 0 420px; overflow:hidden; }
 	.goods-spec h1{ display:block; color:#555; font-size:18px; font-weight:700; line-height:1.1em; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
 	.goods-spec .subtitle{ margin-top:5px; color:#888; font-size:14px; line-height:18px; }
 	.goods-spec .spec-box{ position:relative; margin-top:10px; }

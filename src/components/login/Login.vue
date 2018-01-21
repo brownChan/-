@@ -68,17 +68,17 @@
             //$router代表路由实例，$route代表url对象
             //我们这里通过$route对象获取url中的信息，$router对象进行路由跳转等操作
             let nextPage = this.$route.query.nextPage;
-            this.$router.push({path:nextPage? nextPage:'/admin'});
-        //     this.$alert('登陆成功，马上跳转到首页', '温馨提示', {
-        //   confirmButtonText: '确定',
-        //   callback: action => {
-        //     this.$router.push("/admin")
-        //     // this.$message({
-        //     //   type: 'info',
-        //     //   message: `action: ${ action }`
-        //     // });
-        //   }
-        // });
+            
+            this.$alert('登陆成功，马上跳转到首页', '温馨提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$router.push({path:nextPage? nextPage:'/goods/list'});
+            // this.$message({
+            //   type: 'info',
+            //   message: `action: ${ action }`
+            // });
+          }
+        });
             // this.$alert("登陆成功，马上跳转到首页");
             // this.$router.push("/admin")
           }else{
