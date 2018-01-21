@@ -40,9 +40,9 @@
                 <el-tab-pane label="商品评论" name="second">
                   <div class="tab-content" style="display: block;">
                     <!-- 评论需要频道与ID，ID可以通过$route.params.id拿，但是频道必须得使用者通过属性设置了 -->
-                    <comment tablename="goods"></comment>
+                    <comment tablename ="goods"></comment>
 
-              </div>
+                  </div>
                 </el-tab-pane>
               </el-tabs>
 

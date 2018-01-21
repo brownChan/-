@@ -10,7 +10,13 @@
           <div id="menu" class="right-box">
             <router-link :to="{name:'login'}" >登录</router-link>
             <a href="/register.html">注册</a>
-          <strong>|</strong>
+            <strong>|</strong>
+            <a><i class="iconfont icon-phone"></i>联系我们</a>
+            <router-link :to="{name:"shopcart"}">
+              <i class="iconfont icon-cart"></i>
+              <span>购物车({{$store.getters.shoppingSum}})</span>
+            </router-link> 
+          
           </div>
         </div>
       </div>
