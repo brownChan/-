@@ -43,7 +43,9 @@
                             <tbody>
                                 <tr>
                                     <th width="48" align="center">
-                                        <el-switch active-color="#13ce66"></el-switch>
+                                        <!-- 这里全选按钮的状态是由其它按钮计算得出的，不能用v-model -->
+                                        <!-- 全选按钮的点击变化，我们可以通过change事件得到，并且可以拿到新的布尔值 -->
+                                        <el-switch :value="allSelectedStatus" @change="allChange" active-color="#13ce66"></el-switch>
                                     </th>
                                     <th align="left" colspan="2">商品信息</th>
                                     <th width="84" align="left">单价</th>
@@ -54,27 +56,29 @@
 
                                 <tr v-for="item in goodsList" :key="item.id">
                                     <th width="48" align="center">
-                                        <el-switch active-color="#13ce66"></el-switch>
+                                        <el-switch v-model="item.selected" active-color="#13ce66"></el-switch>
                                     </th>
                                     <th align="left" colspan="2">
                                         <img width="50" height="50" :src="item.img_url" alt="">
-                                        <span>标题</span>
+                                        <span>{{item.title}}</span>
                                     </th>
                                     <th width="84" align="left">
-                                        ￥888
+                                        ￥{{item.sell_price}}
                                     </th>
                                     <th width="104" align="center">
-                                        <el-input-number size="mini" :min="1"></el-input-number>
+                                        <!-- 数字计数器 -->
+                                        <!-- 绑定事件的时候，如果需要自己传参，又要拿到默认的参数，默认参数用$event表示 -->
+                                        <el-input-number @change="change(item.id,$event)" size="mini" :min="1" v-model="item.buycount"></el-input-number>
                                     </th>
                                     <th width="104" align="left">
-                                        <td>￥5434</td>
+                                        <td>￥{{item.sell_price * item.buycount}}</td>
                                     </th>
                                     <th width="54" align="center">
-                                        <el-button size="mini">删除</el-button>
+                                        <el-button size="mini" @click="del(item.id)">删除</el-button>
                                     </th>
                                 </tr>
 
-                                <tr>
+                                <tr v-if="goodsList.length == 0">
                                     <td colspan="10">
                                         <div class="msg-tips">
                                             <div class="icon warning"><i class="iconfont icon-tip"></i></div>
@@ -90,9 +94,9 @@
                                 <tr>
                                     <th align="right" colspan="8">
                                         已选择商品
-                                        <b class="red" id="totalQuantity">5</b> 件 &nbsp;&nbsp;&nbsp;
+                                        <b class="red" id="totalQuantity">{{total}}</b> 件 &nbsp;&nbsp;&nbsp;
                                         商品总金额（不含运费）：
-                                        <span class="red">￥</span><b class="red" id="totalAmount">9999</b>元
+                                        <span class="red">￥</span><b class="red" id="totalAmount">{{sum}}</b>元
                                     </th>
                                 </tr>
                             </tbody>
@@ -102,8 +106,8 @@
                     <!--购物车底部-->
                     <div class="cart-foot clearfix">
                         <div class="right-box">
-                            <button class="button">继续购物</button>
-                            <button class="submit">立即结算</button>
+                            <button class="button" @click="$router.push({name:'goodsList'})">继续购物</button>
+                            <button class="submit" @click = "pay">立即结算</button>
                         </div>
                     </div>
                 </div>
@@ -114,7 +118,102 @@
   
 <script>
   export default {
-  
+      data () {
+          return {
+              ids: null,
+              goodsList:[]
+          }
+      },
+      computed:{
+          //总数 =》 遍历商品列表，如果商品的selected字段为true，那么累加它的buycount购买数量
+          total(){
+              return this.goodsList.reduce((total,v) => total + (v.selected? v.buycount: 0), 0);
+          },
+          //总价 =》 遍历商品列表，如果商品的selected字段为true，那么累加它的buycount购买数量 * sell_price单价
+          sum(){
+              return this.goodsList.reduce((total, v) => total + (v.selected?v.buycount * v.sell_price : 0), 0);
+          },
+          //全选按钮状态
+          allSelectedStatus(){
+              return this.goodsList.every(v =>v.selected);
+          }
+      },
+      methods: {
+        //获取购物车商品数据
+            getShopCartList(){
+                this.$http.get(this.$api.shopcartGoods + this.ids)
+                .then(res=>{
+
+                    //手动补充一个开关的字段，然后修正buycount字段
+                    res.data.message.forEach(goods=>{
+                        // console.log(goods); //goods就是每个商品的具体信息对象
+                        goods.selected = true;
+                        goods.buycount = this.$store.state.shopping[goods.id]
+                    })
+                    this.goodsList = res.data.message;
+                })
+            },
+            //修改商品数量
+            //从goodsList里面修改
+            //调用$store.commit从全局里修改
+            change(id, count){
+                // console.log(id, count);   //91 30
+                this.goodsList.forEach(v =>{
+                    if(v.id == id){
+                        v.buycount = count;
+                    }
+                });
+                //es6简化写法
+                this.$store.commit("modifyShopping",{id , count});
+            },
+
+            //删除商品
+            //从goodsList里面删除
+            //调用$store.commit从全局状态里删除
+            del(id){
+                this.$confirm('是否删除该商品？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                    this.goodsList.forEach(v =>{
+                        //找出不删除的商品重新赋值
+                        this.goodsList = this.goodsList.filter(v => v.id != id);
+                        this.$store.commit("delShopping",id)
+                    })
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+
+                
+            },
+
+            //全选按钮点击函数 =》 遍历商品列表，修改每个商品为新的状态
+            allChange(boolean){
+                // console.log(boolean);  //每次点击这个滑块虽然外表没变，但是已经触发这个事件了
+                // console.log(this.goodsList);   //因为goodsList里面有多个对象，所以要遍历
+                this.goodsList.forEach(v => v.selected = boolean)
+            },
+
+            //跳转到填写用户信息页面，这个页面需要被勾选的商品ids
+            pay(){
+                //先通过filter方法取出勾选的商品列表，然后再通过map方法把商品列表映射为id列表，最后通过join拼接成id字符串           
+                let ids = this.goodsList.filter(v =>v.selected).map(v =>v.id).join(",");
+                                            // console.log(v);  //这个v就是所有的勾选的商品对象
+                this.$router.push({name: 'orderCommit',params:{ids: ids}});
+            }
+      },
+      created(){
+          this.ids = this.$store.getters.shoppingIds;
+          this.getShopCartList();
+      }
   }
 </script>
   

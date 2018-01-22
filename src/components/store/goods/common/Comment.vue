@@ -8,7 +8,7 @@
       <div class="conn-box">
         <div class="editor">
           <!-- 填写评论的区域 -->
-          <textarea v-model="comment" id="txtContent" name="txtContent" sucmsg=" " datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
+          <textarea @keydown.enter="subComment" v-model="comment" id="txtContent" name="txtContent" sucmsg=" " datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
           <span class="Validform_checktip"></span>
         </div>
         <div class="subcon">
@@ -34,7 +34,8 @@
     </ul>
     <!--放置页码-->
     <div class="page-box" style="margin:5px 0 0 62px">
-      <el-pagination :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="5"
+      <el-pagination :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="5" @size-change="sizeChange"
+      @current-change = "currentChange"
         layout="total, sizes, prev, pager, next, jumper" :total="pageData.totalcount">
     </el-pagination>
     </div>
@@ -53,8 +54,8 @@
         comment:'',       //当前评论
         commentList:[],    //评论列表
         pagination:{       //分页
-          pageIndex: 1,
-          pageSize: 5
+          pageIndex: 1,     //当前页
+          pageSize: 5       //每页的条数
         }
       }
     },
@@ -73,16 +74,35 @@
         this.$http.post(this.$api.comment + this.tablename + "/" + this.id, 
         {commenttxt: this.comment})
         .then(res=>{
-          console.log(res);
+          // console.log(res);
           //发表成功后，需要马上获取数据
           this.comment = "";  //提交成功清空输入框
           this.getCommentData();  //重新渲染评论列表
         })
+      },
+      //每页的条数改变时触发
+      sizeChange(size){
+        // console.log(size);
+        this.pagination.pageIndex = this.currentPage;
+        this.pagination.pageSize = size;
+        this.getCommentData();
+      },
+      //当前页发生改变时触发
+      currentChange(current){
+        // console.log(current);
+        this.pagination.pageIndex = current;
+        this.getCommentData();
       }
     },
     created(){
       this.id = this.$route.params.id;
       this.getCommentData();
+    },
+    watch:{
+      $route(){
+        this.id = this.$route.params.id;
+        this.getCommentData();
+      }
     }
   }
 </script>

@@ -16,6 +16,8 @@ import "./css/style.css"
 //导入自己写的模块
 //接口配置
 import api from "./js/api-config.js"
+//导入全局状态
+import store from "./store";
 //路由实例
 import router from "./router"
 import "./assets/index.less"
@@ -49,5 +51,6 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  store:new Vuex.Store(store)
 })

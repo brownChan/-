@@ -45,9 +45,7 @@
                   </div>
                 </el-tab-pane>
               </el-tabs>
-
             </div>
-
           </div>
           <!--/页面左边-->
 
@@ -56,6 +54,7 @@
             <div class="bg-wrap nobg">
               <div class="sidebar-box">
                 <h4>推荐商品</h4>
+                <!-- 复用之前封装好的组件 -->
                 <slide-list :list="goods.hotgoodslist"></slide-list>
               </div>
             </div>
@@ -94,6 +93,13 @@ import Comment from "./common/Comment.vue";
     created(){
       this.id = this.$route.params.id;
       this.getGoods();
+    },
+    //监听$route对象的变化，获取新的id,手动调用方法去刷新视图，
+    watch:{
+      $route(){
+        this.id = this.$route.params.id;
+        this.getGoods();
+      }
     },
     components:{
       SlideList,

@@ -26,7 +26,7 @@
         <dt>购买数量</dt>
         <dd>
           <!-- element-ui计数器 -->
-          <el-input-number size="mini" v-model="num"></el-input-number>
+          <el-input-number size="mini" v-model="number"></el-input-number>
           <span class="stock-txt">
             库存
             <em id="commodityStockNum">{{goods.stock_quantity}}</em>件
@@ -37,12 +37,11 @@
         <dd>
           <div class="btn-buy" id="buyButton">
             <button class="buy">立即购买</button>
-            <button class="add">加入购物车</button>
+            <button class="add" @click = "add">加入购物车</button>
           </div>
         </dd>
       </dl>
     </div>
-
   </div>
 </template>
   
@@ -50,7 +49,17 @@
 export default {
   data () {
     return {
-      num:0
+      number:0
+    }
+  },
+  methods: {
+    add(){
+      this.$store.commit("modifyShopping",{
+        id: this.$route.params.id,
+        //如果添加一个新的商品，那么新商品的数量就为undefined
+        //相加等于NAN，因为当一个值加另一个不为0且不为number类型的值就是为NAN，为了解决这个问题，我们应该给他设置一个默认值0
+        count: this.number + (this.$store.state.shopping[this.$route.params.id] || 0)
+      })
     }
   },
   props:["goods"]
