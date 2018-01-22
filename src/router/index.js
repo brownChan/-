@@ -14,6 +14,7 @@ import GoodsDetail from "@/components/store/goods/Detail"
 import Shopcart from "@/components/store/shopcart/Shopcart"
 import OrderCommit from "@/components/store/order/Commit"
 import OrderPay from "@/components/store/order/Pay"
+import Complete from "@/components/store/order/Complete";
 
 //启动路由插件
 Vue.use(Router)
@@ -30,7 +31,8 @@ let router = new Router({
       { name: 'shopcart', path: "shopcart", component: Shopcart },
       //订单
       { name: 'orderCommit', path: "order/commit/:ids", component: OrderCommit },
-      { name: 'orderPay', path: "order/pay", component: OrderPay }
+      { name: 'orderPay', path: "order/pay/:id", component: OrderPay },
+      { name: 'complete', path: "order/complete", component: Complete }
     ]},
     //登录
     {name:'login',path:'/login', component: Login},
