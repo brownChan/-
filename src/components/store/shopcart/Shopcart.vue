@@ -145,7 +145,7 @@
                 .then(res=>{
 
                     //手动补充一个开关的字段，然后修正buycount字段
-                    res.data.message.forEach(goods=>{
+                    res.data.message.forEach(goods =>{
                         // console.log(goods); //goods就是每个商品的具体信息对象
                         goods.selected = true;
                         goods.buycount = this.$store.state.shopping[goods.id]
@@ -207,7 +207,7 @@
                 //先通过filter方法取出勾选的商品列表，然后再通过map方法把商品列表映射为id列表，最后通过join拼接成id字符串           
                 let ids = this.goodsList.filter(v =>v.selected).map(v =>v.id).join(",");
                                             // console.log(v);  //这个v就是所有的勾选的商品对象
-                this.$router.push({name: 'orderCommit',params:{ids: ids}});
+                this.$router.push({name: 'orderCommit', params:{ids: ids}});
             }
       },
       created(){

@@ -15,6 +15,7 @@ import Shopcart from "@/components/store/shopcart/Shopcart"
 import OrderCommit from "@/components/store/order/Commit"
 import OrderPay from "@/components/store/order/Pay"
 import Complete from "@/components/store/order/Complete";
+import Pay from "@/components/store/pay/Pay";
 
 //启动路由插件
 Vue.use(Router)
@@ -36,6 +37,7 @@ let router = new Router({
     ]},
     //登录
     {name:'login',path:'/login', component: Login},
+    {name:'pay',path:'/pay/:id/:price', component: Pay},
   ]
 })
 router.beforeEach(beforeEach)

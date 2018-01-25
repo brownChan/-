@@ -41,47 +41,47 @@
                         <h2 class="slide-tit">
                             <span>1、收货地址</span>
                         </h2>
-                        <form id="orderForm" name="orderForm">
+                        <form id="orderForm" name="orderForm" @submit.prevent="submit">
                             <div class="form-box address-info">
                                 <dl class="form-group">
                                     <dt>收货人姓名：</dt>
                                     <dd>
                                         <input name="book_id" id="book_id" type="hidden" value="0">
-                                        <input  name="accept_name" id="accept_name" type="text" class="input" datatype="s2-20" sucmsg=" ">
+                                        <input v-model="formData.accept_name" name="accept_name" id="accept_name" type="text" class="input" datatype="s2-20" sucmsg=" ">
                                         <span class="Validform_checktip">*收货人姓名</span>
                                     </dd>
                                 </dl>
                                 <dl class="form-group">
                                     <dt>所属地区：</dt>
                                     <dd>
-                                        省市区三级联动
+                                        <v-distpicker :placeholders="placeholders" @selected="formData.area = $event"></v-distpicker>
                                     </dd>
                                 </dl>
                                 <dl class="form-group">
                                     <dt>详细地址：</dt>
                                     <dd>
-                                        <input name="address" id="address" type="text" class="input" datatype="*2-100" sucmsg=" ">
+                                        <input v-model="formData.address" name="address" id="address" type="text" class="input" datatype="*2-100" sucmsg=" ">
                                         <span class="Validform_checktip">*除上面所属地区外的详细地址</span>
                                     </dd>
                                 </dl>
                                 <dl class="form-group">
                                     <dt>手机号码：</dt>
                                     <dd>
-                                        <input name="mobile" id="mobile" type="text" class="input" datatype="m" sucmsg=" ">
+                                        <input v-model="formData.mobile" name="mobile" id="mobile" type="text" class="input" datatype="m" sucmsg=" ">
                                         <span class="Validform_checktip">*收货人的手机号码</span>
                                     </dd>
                                 </dl>
                                 <dl class="form-group">
                                     <dt>电子邮箱：</dt>
                                     <dd>
-                                        <input name="email" id="email" type="text" class="input" value="">
+                                        <input v-model="formData.email" name="email" id="email" type="text" class="input" value="">
                                         <span class="Validform_checktip">方便通知订单状态，非必填</span>
                                     </dd>
                                 </dl>
                                 <dl class="form-group">
                                     <dt>邮政编码：</dt>
                                     <dd>
-                                        <input name="post_code" id="post_code" type="txt" class="input code">
+                                        <input v-model="formData.post_code" name="post_code" id="post_code" type="txt" class="input code">
                                         <span class="Validform_checktip">所在地区的邮政编码，非必填</span>
                                     </dd>
                                 </dl>
@@ -93,7 +93,8 @@
                                 <!-- 我们后台只有一个支付方式, 在线支付 -->
                                 <li>
                                     <label>
-                                        <el-radio>在线支付</el-radio>
+                                      <!-- 单选框需要设置一个label属性，当用户选中时，v-model关联的字段值就会更改为label指定的值 -->
+                                        <el-radio v-model="formData.payment_id" label="6">在线支付</el-radio>
                                     </label>
                                 </li>
                             </ul>
@@ -102,19 +103,20 @@
                             </h2>
                             <ul class="item-box clearfix">
                                 <!--取得一个DataTable-->
+                                <!-- 当你的多个单选按钮v-model绑定同一个字段时，那么你只能选取其中一个 -->
                                 <li>
                                     <label>
-                                        <el-radio >顺丰</el-radio>
+                                        <el-radio v-model="formData.express_id" label="1">顺丰</el-radio>
                                     </label>
                                 </li>
                                 <li>
                                     <label>
-                                        <el-radio>圆通</el-radio>
+                                        <el-radio v-model="formData.express_id" label="2">圆通</el-radio>
                                     </label>
                                 </li>
                                 <li>
                                     <label>
-                                        <el-radio>韵达</el-radio>
+                                        <el-radio v-model="formData.express_id" label="3">韵达</el-radio>
                                     </label>
                                 </li>
                             </ul>
@@ -132,26 +134,26 @@
                                         <th width="84" align="center">购买数量</th>
                                         <th width="104" align="left">金额(元)</th>
                                     </tr>
-                                    <tr>
+                                    <tr v-for="item in goodsList" :key="item.id">
                                         <td width="68">
-                                            <router-link to="">
-                                                <img class="img">
+                                            <router-link :to="{name:'goodsDetail', params: {id: item.id}}">
+                                                <img class="img" :src="item.img_url">
                                             </router-link>
                                         </td>
                                         <td>
-                                            <router-link to="">
-                                                标题
+                                            <router-link :to="{name: 'goodsDetail', params:{id: item.id}}">
+                                                {{item.title}}
                                             </router-link>
                                         </td>
                                         <td>
                                             <span class="red">
-                                                ￥777
+                                                ￥{{item.sell_price}}
                                             </span>
                                         </td>
-                                        <td align="center">999</td>
+                                        <td align="center">{{item.buycount}}</td>
                                         <td>
                                             <span class="red">
-                                                ￥7777
+                                                ￥{{item.sell_price * item.buycount}}
                                             </span>
                                         </td>
                                     </tr>
@@ -166,26 +168,26 @@
                                     <dl>
                                         <dt>订单备注(100字符以内)</dt>
                                         <dd>
-                                            <textarea name="message" class="input" style="height:35px;"></textarea>
+                                            <textarea v-model="formData.message" name="message" class="input" style="height:35px;"></textarea>
                                         </dd>
                                     </dl>
                                 </div>
                                 <div class="right-box">
                                     <p>
                                         商品
-                                        <label class="price">78</label> 件&nbsp;&nbsp;&nbsp;&nbsp; 商品金额：￥
-                                        <label id="goodsAmount" class="price">900</label> 元&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label class="price">{{goodsTotal}}</label> 件&nbsp;&nbsp;&nbsp;&nbsp; 商品金额：￥
+                                        <label id="goodsAmount" class="price">{{goodsSum}}</label> 元&nbsp;&nbsp;&nbsp;&nbsp;
                                     </p>
                                     <p>
                                         运费：￥
-                                        <label id="expressFee" class="price">200</label> 元
+                                        <label id="expressFee" class="price">{{expressMoment}}</label> 元
                                     </p>
                                     <p class="txt-box">
                                         应付总金额：￥
-                                        <label id="totalAmount" class="price">1100</label>
+                                        <label id="totalAmount" class="price">{{sum}}</label>
                                     </p>
                                     <p class="btn-box">
-                                        <button class="btn button">返回购物车</button>
+                                        <button class="btn button" @click="$router.push({name:'shopcart'})">返回购物车</button>
                                         <button id="btnSubmit" class="btn submit" name="btnSubmit" type="submit">确认提交</button>
                                     </p>
                                 </div>
@@ -199,8 +201,95 @@
 </template>
 
 <script>
+    //引入三级联动
+    import VDistpicker from 'v-distpicker';
     export default {
+        components: {
+          VDistpicker  
+        },
+      data () {
+        return {
+            //三级联动的默认时的样式
+            placeholders: {
+              province: '------- 省 --------',
+              city: '--- 市 ---',
+              area: '--- 区 ---',
+          },
+            //快递价格表，key为快递ID，val为快递价格
+            expressPrice:{
+                1: 20,
+                2: 15,
+                3: 10
+            },
+          ids: null,
+          goodsList: [],
+          formData: {
+              //设置默认支付方式与快递默认值
+              payment_id: "6",
+              express_id: "1"
+          }
+        }
+      },
+      computed: {
+        //商品总数
+        goodsTotal(){
+          return this.goodsList.reduce((sum,v)=> sum + v.buycount,0);
+        },
 
+        //商品总价
+        goodsSum(){
+          return this.goodsList.reduce((sum, v)=> sum + v.buycount * v.sell_price, 0);
+        },
+
+        //快递费 ,用户选择的快递id从价格表里面查
+        expressMoment(){
+          return this.expressPrice[this.formData.express_id];
+        },
+
+        //所有商品加快递费的总价
+        sum(){
+          return this.goodsSum + this.expressMoment;
+        }
+      },
+      methods: {
+        //获取购物车商品列表数据
+        getShopCartList(){
+          this.$http.get(this.$api.shopcartGoods + this.ids)
+          .then(res=>{
+            //修正buycount字段
+            res.data.message.forEach(goods =>{
+              // console.log(goods);  //每个商品的具体信息对象
+              goods.buycount = this.$store.state.shopping[goods.id]
+            })
+            this.goodsList = res.data.message;
+          })
+        },
+        //提交订单，后端需要几个额外的数据，这些需要我们自己计算并手动加上去，因为这不是用户手动填写的字段
+        // goodsAmount  商品总价
+        // expressMoment  快递费
+        // goodsids  商品的所有id
+        //cargoodsobj  一个对象，key为商品ID，val为商品购买数量
+        submit(){
+            this.formData.goodsAmount = this.goodsSum;
+            this.formData.expressMoment = this.expressMoment;
+            this.formData.goodsids = this.ids;
+            //ids字符串先通过split方法劈成数组，然后使用reduce方法遍历得到每一个id，
+            //以这个id为key给一个新对象不断添加属性值，然后就构成了一个{id: val, id:val}这样的对象
+            this.formData.cargoodsobj = this.ids.split(',').reduce((obj, id)=>{obj[id]=5;return obj},{});
+
+            //提交成功后跳转到支付页面，需要把该订单的id传过去
+            this.$http.post(this.$api.orderSubmit, this.formData)
+            .then(res=>{
+                if(res.data.status == 0){
+                    this.$router.push({name:"orderPay",params:{id:res.data.message.orderid}})
+                }
+            })
+        }
+      },
+      created () {
+        this.ids = this.$route.params.ids;
+        this.getShopCartList();
+      }
     }
 </script>
 
